@@ -3,6 +3,7 @@ import { TaskComponent } from './task/task.component';
 import { User } from '../user/user.model';
 import { TaskFormComponent } from "./task-form/task-form.component";
 import { NewTask } from './task-form/new-task.model';
+import { TasksService } from './tasks.service';
 
 @Component({
   selector: 'app-tasks',
@@ -12,6 +13,8 @@ import { NewTask } from './task-form/new-task.model';
   styleUrl: './tasks.component.css',
 })
 export class TasksComponent {
+  constructor(private readonly tasksService: TasksService){}
+
   @Input({ required: false })
   user?: User;
 
@@ -20,11 +23,11 @@ export class TasksComponent {
 
   get selectedTasks() {
     console.log("userID: ", this.user?.id);
-    return this.tasks.filter(task => task.userId === this.user?.id);
+    return this.tasksService.getUserTasks(this.user?.id!);
   }
 
   onTaskComplete(taskId: string) {
-    this.tasks = this.tasks.filter(task => task.id !== taskId);
+    this.tasksService.deleteTask(taskId);
   }
 
   isAddingNewTask = false;
@@ -38,42 +41,7 @@ export class TasksComponent {
   }
 
   addNewTask(newTask: NewTask) {
-    this.tasks.unshift({
-      id: new Date().getTime().toString(),
-      userId: this.user?.id!,
-      ...newTask
-    });
+    this.tasksService.addTask(newTask, this.user?.id!);
     this.isAddingNewTask = false;
   }
-
-  tasks = [
-    {
-      id: 't1',
-      userId: 'u1',
-      title: 'Master Angular',
-      summary: 'Learn angular',
-      dueDate: '2025-12-31',
-    },
-    {
-      id: 't2',
-      userId: 'u1',
-      title: 'Master React',
-      summary: 'Learn react',
-      dueDate: '2024-11-10',
-    },
-    {
-      id: 't3',
-      userId: 'u2',
-      title: 'Master Nothing',
-      summary: 'Learn nothing',
-      dueDate: '2024-08-18',
-    },
-    {
-      id: 't4',
-      userId: 'u4',
-      title: 'Enjoy',
-      summary: 'yoy yo',
-      dueDate: '2024-09-25',
-    },
-  ];
 }
