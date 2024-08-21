@@ -25,11 +25,7 @@ export class TasksComponent {
     console.log("userID: ", this.user?.id);
     return this.tasksService.getUserTasks(this.user?.id!);
   }
-
-  onTaskComplete(taskId: string) {
-    this.tasksService.deleteTask(taskId);
-  }
-
+  
   isAddingNewTask = false;
   
   onAddNewTask() {
@@ -37,11 +33,6 @@ export class TasksComponent {
   }
 
   onCancelAddTask() {
-    this.isAddingNewTask = false;
-  }
-
-  addNewTask(newTask: NewTask) {
-    this.tasksService.addTask(newTask, this.user?.id!);
     this.isAddingNewTask = false;
   }
 }
