@@ -36,19 +36,32 @@ export class TasksService {
         },
       ];
 
+      constructor(){
+        const storedTasks = localStorage.getItem("tasks");
+        if(storedTasks) {
+          this.tasks = JSON.parse(storedTasks);
+        }
+      }
+
       public addTask(newTask: NewTask, userId: string) {
         this.tasks.unshift({
             ...newTask,
             userId,
             id: new Date().getTime().toString()
-        })
+        });
+        this.storeTasksToLocalStorage();
       }
 
       public deleteTask(id: string) {
         this.tasks = this.tasks.filter(task => task.id !== id);
+        this.storeTasksToLocalStorage();
       }
 
       public getUserTasks(userId: string) {
         return this.tasks.filter((task) => task.userId === userId);
+      }
+
+      private storeTasksToLocalStorage(){
+        localStorage.setItem("tasks", JSON.stringify(this.tasks));
       }
 }
